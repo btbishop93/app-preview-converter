@@ -5,7 +5,6 @@ import { TypingAnimation } from "@/components/magicui/terminal";
 import { AnimatedSpan } from "@/components/magicui/terminal";
 import { Button } from "@/components/ui/button";
 import { AnimatedUploadButton } from "@/components/magicui/animated-upload-button";
-import { ShimmerButton } from "@/components/ui/animated-elements";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { RainbowButton } from "./magicui/rainbow-button";
@@ -14,7 +13,7 @@ import { useUploadButtonState } from "@/hooks/useUploadButtonState";
 export interface Button {
   text: string;
   action: string;
-  type?: 'shimmer' | 'default';
+  type?: 'rainbow' | 'default';
   onAction?: (file?: File) => void;
 }
 
@@ -134,8 +133,8 @@ export default function TerminalContent({ messages, onUploadComplete, onButtonCl
             );
           }
           
-          // Use ShimmerButton for buttons with type="shimmer"
-          if (button.type === 'shimmer') {
+          // Use RainbowButton for buttons with type="rainbow"
+          if (button.type === 'rainbow') {
             return (
               <RainbowButton 
                 key={buttonIndex}

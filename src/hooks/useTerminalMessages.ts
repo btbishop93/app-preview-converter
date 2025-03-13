@@ -32,7 +32,7 @@ export const useTerminalMessages = () => {
   const addSuccessMessage = (fileName: string) => {
     setMessages(prev => [...prev, {
       text: `✓ ${fileName} uploaded successfully!`,
-      delay: 300,
+      delay: 0,
       type: "success"
     }]);
   };
@@ -106,7 +106,7 @@ export const useTerminalMessages = () => {
       delay: 3500,
       type: "success",
       buttons: [
-        { text: "Download", action: "download", type: "shimmer" },
+        { text: "Download", action: "download", type: "rainbow" },
         { text: "New Conversion", action: "restart" }
       ]
     }]);
@@ -119,7 +119,7 @@ export const useTerminalMessages = () => {
         delay: 0,
         type: "info",
         buttons: [
-          { text: "Support me", action: "support", type: "shimmer" },
+          { text: "Support me", action: "support", type: "rainbow" },
           { text: "New Conversion", action: "restart" }
         ]
       }

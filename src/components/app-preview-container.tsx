@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Confetti } from "@/components/ui/animated-elements";
+import { useState, useEffect, useRef } from "react";
 import VideoConvertFlow from "@/components/video-convert/VideoConvertFlow";
 import { UploadButtonProvider } from "@/components/providers/upload-button-provider";
+import { Confetti, ConfettiRef } from "./magicui/confetti";
 
 export default function AppPreviewContainer() {
+
+  const confettiRef = useRef<ConfettiRef>(null);
+  
   const [isMounted, setIsMounted] = useState(false);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [platform, setPlatform] = useState<'macOS' | 'iOS'>('macOS');
@@ -27,6 +30,10 @@ export default function AppPreviewContainer() {
     setAddSilentAudio(shouldAddAudio);
   };
 
+  const handleConversionComplete = () => {
+    confettiRef.current?.fire();
+  };
+
   if (!isMounted) {
     return (
       <UploadButtonProvider>
@@ -36,6 +43,7 @@ export default function AppPreviewContainer() {
               onFileSelected={handleFileSelected}
               onPlatformSelected={handlePlatformSelected}
               onAudioSelected={handleAudioSelected}
+              onConversionComplete={handleConversionComplete}
             />
           </div>
         </div>
@@ -45,13 +53,15 @@ export default function AppPreviewContainer() {
 
   return (
     <UploadButtonProvider>
-      <Confetti active={true} />
+      <Confetti ref={confettiRef}
+        className="absolute left-0 top-0 z-0 size-full"/>
       <div className="flex justify-center items-center">
         <div className="max-w-4xl w-full mx-auto bg-white">
           <VideoConvertFlow 
             onFileSelected={handleFileSelected}
             onPlatformSelected={handlePlatformSelected}
             onAudioSelected={handleAudioSelected}
+            onConversionComplete={handleConversionComplete}
           />
         </div>
       </div>

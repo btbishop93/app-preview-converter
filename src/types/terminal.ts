@@ -1,7 +1,7 @@
 export interface Button {
   text: string;
   action: string;
-  type?: 'shimmer' | 'default';
+  type?: 'rainbow' | 'default';
   onAction?: (file?: File) => void;
 }
 

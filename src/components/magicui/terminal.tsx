@@ -28,8 +28,11 @@ export const AnimatedSpan = ({
   </motion.div>
 );
 
+type MessageType = 'prompt' | 'info' | 'success' | 'error';
+
 interface TypingAnimationProps extends MotionProps {
   children: string;
+  messageType?: MessageType;
   className?: string;
   duration?: number;
   delay?: number;
@@ -38,6 +41,7 @@ interface TypingAnimationProps extends MotionProps {
 
 export const TypingAnimation = ({
   children,
+  messageType,
   className,
   duration = 60,
   delay = 0,
@@ -45,7 +49,7 @@ export const TypingAnimation = ({
   ...props
 }: TypingAnimationProps) => {
   if (typeof children !== "string") {
-    throw new Error("TypingAnimation: children must be a string. Received:");
+    throw new Error("TypingAnimation: children must be a string");
   }
 
   const MotionComponent = motion.create(Component, {
@@ -88,10 +92,10 @@ export const TypingAnimation = ({
         "text-sm font-normal tracking-tight",
         className,
         "break-words w-full",
-        children.type === 'prompt' && 'text-blue-500',
-        children.type === 'info' && 'text-neutral-400',
-        children.type === 'success' && 'text-green-500',
-        children.type === 'error' && 'text-red-500'
+        messageType === 'prompt' && 'text-blue-500',
+        messageType === 'info' && 'text-neutral-400',
+        messageType === 'success' && 'text-green-500',
+        messageType === 'error' && 'text-red-500'
       )}
       {...props}
     >

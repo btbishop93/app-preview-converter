@@ -8,12 +8,14 @@ interface VideoConvertFlowProps {
   onFileSelected: (file: File) => void;
   onPlatformSelected: (platform: 'macOS' | 'iOS') => void;
   onAudioSelected: (addSilentAudio: boolean) => void;
+  onConversionComplete?: () => void;
 }
 
 export default function VideoConvertFlow({ 
   onFileSelected, 
   onPlatformSelected,
-  onAudioSelected 
+  onAudioSelected,
+  onConversionComplete 
 }: VideoConvertFlowProps) {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [selectedPlatform, setSelectedPlatform] = useState<'macOS' | 'iOS'>('macOS');
@@ -156,6 +158,11 @@ export default function VideoConvertFlow({
       const url = URL.createObjectURL(blob);
       setConvertedVideoUrl(url);
       addConversionCompleteMessage();
+      
+      // Wait for the message animation to complete before triggering confetti
+      setTimeout(() => {
+        onConversionComplete?.();
+      }, 5950); // Wait for initial delay (3500ms) + typing duration (1950ms) + buffer (500ms)
     } catch (error) {
       console.error('Conversion error:', error);
       // Handle error if needed
