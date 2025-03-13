@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# App Preview Converter
 
-## Getting Started
+Convert your videos to the required format for macOS and iOS App Store app previews.
 
-First, run the development server:
+## Features
+
+- Convert videos to macOS App Store format (1920×1080)
+- Convert videos to iOS App Store format (886×1920)
+- Add silent audio track (fixes Apple upload issues)
+- Fast server-side processing with native FFmpeg
+- Progress tracking for upload and download
+- Instant preview of converted videos
+
+## Server Requirements
+
+This application requires FFmpeg to be installed on the server. For optimal performance, follow these installation instructions:
+
+### macOS
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Using Homebrew
+brew install ffmpeg
+
+# Verify installation
+ffmpeg -version
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Ubuntu/Debian
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Update package lists
+sudo apt update
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Install FFmpeg
+sudo apt install -y ffmpeg
 
-## Learn More
+# Verify installation
+ffmpeg -version
+```
 
-To learn more about Next.js, take a look at the following resources:
+### CentOS/RHEL/Fedora
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# For CentOS/RHEL 8 or newer and Fedora
+sudo dnf install -y ffmpeg ffmpeg-devel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Verify installation
+ffmpeg -version
+```
 
-## Deploy on Vercel
+### Windows Server
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Download FFmpeg from the [official website](https://www.ffmpeg.org/download.html)
+2. Extract the files to a folder, e.g., `C:\ffmpeg`
+3. Add the `bin` folder to your system PATH
+4. Verify by running `ffmpeg -version` in the command prompt
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start the development server
+pnpm dev
+```
+
+## Building for Production
+
+```bash
+# Build the application
+pnpm build
+
+# Start the production server
+pnpm start
+```
+
+## Deployment
+
+This application can be deployed to any Node.js hosting platforms that support Next.js, such as:
+
+- Vercel
+- Netlify
+- AWS Amplify
+- DigitalOcean App Platform
+- Heroku
+
+**Important:** Ensure that FFmpeg is installed on your deployment server for the video conversion to work properly.
+
+## License
+
+MIT
