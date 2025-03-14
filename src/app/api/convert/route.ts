@@ -90,6 +90,27 @@ export async function POST(request: NextRequest) {
         console.log('FFmpeg stdout:', stdout);
         console.log('FFmpeg stderr:', stderr);
       }
+
+      // Convert final output to 30fps
+      const finalTempPath = path.join(tempDir, `final-${uniqueId}.mp4`);
+      try {
+        console.log(`Executing command: ffmpeg -y -i ${outputPath} -r 30 ${finalTempPath}`);
+        const fpsResult = await execAsync(`ffmpeg -y -i ${outputPath} -r 30 ${finalTempPath}`);
+        console.log('FPS FFmpeg stdout:', fpsResult.stdout);
+        console.log('FPS FFmpeg stderr:', fpsResult.stderr);
+
+        // Move the final temp file to output
+        await fs.rename(finalTempPath, outputPath);
+      } finally {
+        // Clean up final temp file if it exists
+        try {
+          await fs.access(finalTempPath).then(() => 
+            fs.unlink(finalTempPath).catch(() => {})
+          ).catch(() => {});
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+      }
       
       // Read the output file
       const outputBuffer = await fs.readFile(outputPath);
