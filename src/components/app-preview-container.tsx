@@ -10,24 +10,21 @@ export default function AppPreviewContainer() {
   const confettiRef = useRef<ConfettiRef>(null);
   
   const [isMounted, setIsMounted] = useState(false);
-  const [_videoFile, setVideoFile] = useState<File | null>(null);
-  const [_platform, setPlatform] = useState<'macOS' | 'iOS'>('macOS');
-  const [_addSilentAudio, setAddSilentAudio] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const handleFileSelected = (file: File) => {
-    setVideoFile(file);
+  const handleFileSelected = () => {
+    // No-op since we don't need to track the file state here
   };
 
-  const handlePlatformSelected = (selectedPlatform: 'macOS' | 'iOS') => {
-    setPlatform(selectedPlatform);
+  const handlePlatformSelected = () => {
+    // No-op since we don't need to track the platform state here
   };
 
-  const handleAudioSelected = (shouldAddAudio: boolean) => {
-    setAddSilentAudio(shouldAddAudio);
+  const handleAudioSelected = () => {
+    // No-op since we don't need to track the audio state here
   };
 
   const handleConversionComplete = () => {

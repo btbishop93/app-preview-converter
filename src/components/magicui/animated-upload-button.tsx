@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { HTMLMotionProps } from "motion/react";
 import { AnimatePresence, motion } from "motion/react";
-import React, { useState } from "react";
+import React from "react";
 import { Upload, Check, Loader2 } from "lucide-react";
 
 interface AnimatedUploadButtonProps
@@ -22,10 +22,8 @@ export const AnimatedUploadButton = React.forwardRef<
     { uploadStatus = false, isUploading = false, onClick, onUpload, className, ...props },
     ref,
   ) => {
-    const [isUploaded, _setIsUploaded] = useState<boolean>(uploadStatus);
-
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (!isUploaded && !isUploading) {
+      if (!uploadStatus && !isUploading) {
         onUpload?.();
       }
       onClick?.(e);
@@ -33,7 +31,7 @@ export const AnimatedUploadButton = React.forwardRef<
 
     return (
       <AnimatePresence mode="wait">
-        {isUploaded ? (
+        {uploadStatus ? (
           <motion.button
             ref={ref}
             className={cn(

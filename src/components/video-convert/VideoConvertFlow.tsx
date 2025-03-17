@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTerminalMessages } from '@/hooks/useTerminalMessages';
 import TerminalContent from '@/components/terminal-content';
 import { TerminalMessage } from '@/types/terminal';
@@ -28,7 +28,6 @@ export default function VideoConvertFlow({
     messages,
     initializeMessages,
     addUploadPrompt,
-    addSuccessMessage,
     addPlatformPrompt,
     addPlatformSuccessMessage,
     addAudioPrompt,
@@ -36,26 +35,28 @@ export default function VideoConvertFlow({
     addConversionStartMessage,
     addConversionCompleteMessage,
     addSupportMessage,
-    addErrorMessage,
     setMessages
   } = useTerminalMessages();
 
-  const updateUploadMessage = (message: string, type: 'error' | 'success') => {
+  const updateMessage = useCallback((message: string, type: 'success' | 'error') => {
     setMessages(currentMessages => {
       // Find the upload prompt index
-      const uploadPromptIndex = currentMessages.findIndex(m => m.text === "Upload a video to begin:");
-      
-      // Keep only messages up to and including the upload prompt
+      const uploadPromptIndex = currentMessages.findIndex(msg => msg.type === 'prompt');
+      if (uploadPromptIndex === -1) return currentMessages;
+
+      // Keep all messages before the upload prompt
       const baseMessages = currentMessages.slice(0, uploadPromptIndex + 1);
-      
-      // Add the new message
-      const newMessage: TerminalMessage = type === 'error' 
-        ? { text: `⚠️ Whoops! ${message}.`, delay: 300, type: 'error' }
-        : { text: `✓ ${message}`, delay: 300, type: 'success' };
-      
+
+      // Create new message
+      const newMessage: TerminalMessage = {
+        text: type === 'success' ? `✓ ${message}` : `⚠️ ${message}`,
+        delay: 300,
+        type: type
+      };
+
       return [...baseMessages, newMessage];
     });
-  };
+  }, [setMessages]);
 
   const validateVideo = async (file: File): Promise<{ isValid: boolean; errors: string[] }> => {
     const errors: string[] = [];
@@ -103,14 +104,14 @@ export default function VideoConvertFlow({
         hide(); // Hide upload button on success
         setVideoFile(file);
         onFileSelected(file);
-        updateUploadMessage(`${file.name} uploaded successfully!`, 'success');
+        updateMessage(`${file.name} uploaded successfully!`, 'success');
         addPlatformPrompt();
       } else {
         const errorMessage = validation.errors.join(' and ');
-        updateUploadMessage(errorMessage, 'error');
+        updateMessage(errorMessage, 'error');
       }
     });
-  }, [uploadKey, show, hide, initializeMessages, addUploadPrompt, onFileSelected, updateUploadMessage, addPlatformPrompt]);
+  }, [uploadKey, show, hide, initializeMessages, addUploadPrompt, onFileSelected, updateMessage, addPlatformPrompt]);
 
   const handlePlatformSelection = (action: string) => {
     if (action === 'macos' || action === 'ios') {
@@ -203,12 +204,12 @@ export default function VideoConvertFlow({
       if (validation.isValid) {
         setVideoFile(file);
         onFileSelected(file);
-        updateUploadMessage(`${file.name} uploaded successfully!`, 'success');
+        updateMessage(`${file.name} uploaded successfully!`, 'success');
         hide(); // Hide upload button on success
         addPlatformPrompt();
       } else {
         const errorMessage = validation.errors.join(' and ');
-        updateUploadMessage(errorMessage, 'error');
+        updateMessage(errorMessage, 'error');
       }
     });
   };

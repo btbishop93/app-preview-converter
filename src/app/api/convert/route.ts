@@ -42,8 +42,8 @@ export async function POST(request: NextRequest) {
       try {
         const { stdout } = await execAsync(`ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=s=x:p=0 ${inputPath}`);
         console.log(`Input file info: ${stdout.trim()}`);
-      } catch (_e) {
-        console.error('Error checking input dimensions:', _e);
+      } catch (error) {
+        console.error('Error checking input dimensions:', error);
       }
       
       // Apply original scaling commands only
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
           // Clean up temp file even if there's an error
           try {
             await fs.unlink(tempOutputPath).catch(() => {});
-          } catch (_e) {
+          } catch {
             // Ignore cleanup errors
           }
         }
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
           await fs.access(finalTempPath).then(() => 
             fs.unlink(finalTempPath).catch(() => {})
           ).catch(() => {});
-        } catch (_e) {
+        } catch {
           // Ignore cleanup errors
         }
       }
@@ -119,8 +119,8 @@ export async function POST(request: NextRequest) {
       try {
         const { stdout } = await execAsync(`ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 ${outputPath}`);
         console.log(`Output file dimensions: ${stdout.trim()}`);
-      } catch (_e) {
-        console.error('Error checking output dimensions:', _e);
+      } catch (error) {
+        console.error('Error checking output dimensions:', error);
       }
       
       // Check the audio properties if silent audio was added
@@ -128,8 +128,8 @@ export async function POST(request: NextRequest) {
         try {
           const { stdout } = await execAsync(`ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels,bit_rate -of default=noprint_wrappers=1 ${outputPath}`);
           console.log(`Output audio properties: ${stdout.trim()}`);
-        } catch (_e) {
-          console.error('Error checking audio properties:', _e);
+        } catch (error) {
+          console.error('Error checking audio properties:', error);
         }
       }
       
@@ -152,9 +152,8 @@ export async function POST(request: NextRequest) {
         await fs.access(outputPath).then(() => 
           fs.unlink(outputPath).catch(() => {})
         ).catch(() => {});
-      } catch (_e) {
+      } catch {
         // Ignore cleanup errors
-        console.log('Error during cleanup:', _e);
       }
     }
   } catch (error) {

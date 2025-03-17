@@ -2,9 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { motion, MotionStyle } from "framer-motion";
-import { HTMLAttributes } from 'react';
 
-interface BorderBeamProps extends HTMLAttributes<HTMLDivElement> {
+interface BorderBeamProps {
   /**
    * The size of the border beam.
    */
@@ -28,7 +27,7 @@ interface BorderBeamProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * The motion transition of the border beam.
    */
-  transition?: any; // Temporary type until we properly import it
+  transition?: MotionStyle['transition'];
   /**
    * The class name of the border beam.
    */
@@ -45,13 +44,10 @@ interface BorderBeamProps extends HTMLAttributes<HTMLDivElement> {
    * The initial offset position (0-100).
    */
   initialOffset?: number;
-  containerClassName?: string;
 }
 
 export const BorderBeam = ({
-  children,
   className,
-  containerClassName,
   size = 50,
   delay = 0,
   duration = 6,
