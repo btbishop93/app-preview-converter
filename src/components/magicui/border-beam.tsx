@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion, MotionStyle } from "framer-motion";
+import { motion, MotionStyle, Transition } from "framer-motion";
 
 interface BorderBeamProps {
   /**
@@ -27,7 +27,7 @@ interface BorderBeamProps {
   /**
    * The motion transition of the border beam.
    */
-  transition?: MotionStyle['transition'];
+  transition?: Transition;
   /**
    * The class name of the border beam.
    */
@@ -58,6 +58,13 @@ export const BorderBeam = ({
   reverse = false,
   initialOffset = 0,
 }: BorderBeamProps) => {
+  const baseTransition: Transition = {
+    repeat: Infinity,
+    ease: "linear",
+    duration,
+    delay: -delay,
+  };
+
   return (
     <div className="pointer-events-none absolute inset-0 rounded-[inherit] border border-transparent [mask-clip:padding-box,border-box] [mask-composite:intersect] [mask-image:linear-gradient(transparent,transparent),linear-gradient(#000,#000)]">
       <motion.div
@@ -81,13 +88,7 @@ export const BorderBeam = ({
             ? [`${100 - initialOffset}%`, `${-initialOffset}%`]
             : [`${initialOffset}%`, `${100 + initialOffset}%`],
         }}
-        transition={{
-          repeat: Infinity,
-          ease: "linear",
-          duration,
-          delay: -delay,
-          ...transition,
-        }}
+        transition={transition ? { ...baseTransition, ...transition } : baseTransition}
       />
     </div>
   );
