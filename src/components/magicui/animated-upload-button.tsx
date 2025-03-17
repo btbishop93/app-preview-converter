@@ -22,7 +22,7 @@ export const AnimatedUploadButton = React.forwardRef<
     { uploadStatus = false, isUploading = false, onClick, onUpload, className, ...props },
     ref,
   ) => {
-    const [isUploaded, setIsUploaded] = useState<boolean>(uploadStatus);
+    const [isUploaded, _setIsUploaded] = useState<boolean>(uploadStatus);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!isUploaded && !isUploading) {

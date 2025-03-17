@@ -10,9 +10,9 @@ export default function AppPreviewContainer() {
   const confettiRef = useRef<ConfettiRef>(null);
   
   const [isMounted, setIsMounted] = useState(false);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [platform, setPlatform] = useState<'macOS' | 'iOS'>('macOS');
-  const [addSilentAudio, setAddSilentAudio] = useState(true);
+  const [_videoFile, setVideoFile] = useState<File | null>(null);
+  const [_platform, setPlatform] = useState<'macOS' | 'iOS'>('macOS');
+  const [_addSilentAudio, setAddSilentAudio] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);

@@ -110,7 +110,7 @@ export default function VideoConvertFlow({
         updateUploadMessage(errorMessage, 'error');
       }
     });
-  }, [uploadKey]);
+  }, [uploadKey, show, hide, initializeMessages, addUploadPrompt, onFileSelected, updateUploadMessage, addPlatformPrompt]);
 
   const handlePlatformSelection = (action: string) => {
     if (action === 'macos' || action === 'ios') {
