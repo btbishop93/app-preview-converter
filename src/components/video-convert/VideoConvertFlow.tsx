@@ -184,9 +184,8 @@ export default function VideoConvertFlow({
   };
 
   const handleButtonClick = (action: string) => {
-    if (action === 'support') {
-      // Placeholder for future Buy Me a Coffee integration
-      console.log('Support button clicked');
+    if (action === 'bmc') {
+      window.open('https://buymeacoffee.com/brendenbishop', '_blank');
     }
   };
 
@@ -222,7 +221,7 @@ export default function VideoConvertFlow({
         handleAudioSelection(action);
         if (action === 'download') handleDownload();
         if (action === 'restart') handleRestart();
-        if (action === 'support') handleButtonClick(action);
+        if (action === 'bmc') handleButtonClick(action);
       }}
       resetUploadState={() => setUploadKey(prev => prev + 1)}
     />

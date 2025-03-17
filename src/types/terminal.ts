@@ -1,7 +1,7 @@
 export interface Button {
   text: string;
   action: string;
-  type?: 'rainbow' | 'default';
+  type?: 'rainbow' | 'default' | 'bmc';
   onAction?: (file?: File) => void;
 }
 

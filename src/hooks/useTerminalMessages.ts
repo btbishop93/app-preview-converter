@@ -119,7 +119,7 @@ export const useTerminalMessages = () => {
         delay: 0,
         type: "info",
         buttons: [
-          { text: "Support me", action: "support", type: "rainbow" },
+          { text: "Buy me a coffee", action: "bmc", type: "bmc" },
           { text: "New Conversion", action: "restart" }
         ]
       }

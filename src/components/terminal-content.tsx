@@ -9,11 +9,12 @@ import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { RainbowButton } from "./magicui/rainbow-button";
 import { useUploadButtonState } from "@/hooks/useUploadButtonState";
+import { BMCButton } from "@/components/ui/bmc-button";
 
 export interface Button {
   text: string;
   action: string;
-  type?: 'rainbow' | 'default';
+  type?: 'rainbow' | 'default' | 'bmc';
   onAction?: (file?: File) => void;
 }
 
@@ -130,6 +131,17 @@ export default function TerminalContent({ messages, onUploadComplete, onButtonCl
                   className="w-40"
                 />
               </div>
+            );
+          }
+          
+          // Use BMCButton for buttons with type="bmc"
+          if (button.type === 'bmc') {
+            return (
+              <BMCButton 
+                key={buttonIndex}
+                link="https://buymeacoffee.com/brendenbishop"
+                className="w-36 cursor-pointer hover:drop-shadow-md hover:scale-105 transition-all duration-300"
+              />
             );
           }
           
