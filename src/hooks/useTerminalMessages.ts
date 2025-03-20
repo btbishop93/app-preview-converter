@@ -9,7 +9,7 @@ export const useTerminalMessages = () => {
       { text: "Welcome to App Preview Converter v1.0.0", delay: 0, type: "info" },
       { text: "This tool helps you convert videos for App Store submissions", delay: 2100, type: "info" },
     ];
-    setMessages(initialMessages);
+    setMessages(() => initialMessages);
   };
 
   const addUploadPrompt = (onFileUpload: (file: File) => void) => {

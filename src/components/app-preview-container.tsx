@@ -36,12 +36,7 @@ export default function AppPreviewContainer() {
       <UploadButtonProvider>
         <div className="flex justify-center items-center">
           <div className="max-w-3xl w-full mx-auto my-24">
-            <VideoConvertFlow 
-              onFileSelected={handleFileSelected}
-              onPlatformSelected={handlePlatformSelected}
-              onAudioSelected={handleAudioSelected}
-              onConversionComplete={handleConversionComplete}
-            />
+            <div className="animate-pulse bg-gray-200 h-96 rounded-lg"></div>
           </div>
         </div>
       </UploadButtonProvider>

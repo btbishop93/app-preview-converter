@@ -94,6 +94,9 @@ export default function VideoConvertFlow({
     };
   };
 
+  // This effect needs to run only when uploadKey changes 
+  // to avoid infinite re-render loops
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     initializeMessages();
     show(); // Show upload button when component mounts
@@ -111,7 +114,8 @@ export default function VideoConvertFlow({
         updateMessage(errorMessage, 'error');
       }
     });
-  }, [uploadKey, show, hide, initializeMessages, addUploadPrompt, onFileSelected, updateMessage, addPlatformPrompt]);
+  }, [uploadKey]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const handlePlatformSelection = (action: string) => {
     if (action === 'macos' || action === 'ios') {
@@ -196,22 +200,7 @@ export default function VideoConvertFlow({
     setAddSilentAudio(true);
     setConvertedVideoUrl(null);
     setUploadKey(prev => prev + 1);
-    show(); // Show upload button on restart
-    initializeMessages();
-    addUploadPrompt(async (file: File) => {
-      const validation = await validateVideo(file);
-      
-      if (validation.isValid) {
-        setVideoFile(file);
-        onFileSelected(file);
-        updateMessage(`${file.name} uploaded successfully!`, 'success');
-        hide(); // Hide upload button on success
-        addPlatformPrompt();
-      } else {
-        const errorMessage = validation.errors.join(' and ');
-        updateMessage(errorMessage, 'error');
-      }
-    });
+    // The rest will be handled by the useEffect when uploadKey changes
   };
 
   return (

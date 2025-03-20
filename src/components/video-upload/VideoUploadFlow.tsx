@@ -15,6 +15,8 @@ export default function VideoUploadFlow({ onFileSelected }: VideoUploadFlowProps
     addPlatformPrompt
   } = useTerminalMessages();
 
+  // This effect should only run once on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     initializeMessages();
     addUploadPrompt((file: File) => {
