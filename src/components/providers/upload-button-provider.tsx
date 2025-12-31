@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useState } from "react";
 
 interface UploadButtonState {
   isVisible: boolean;
@@ -25,20 +25,16 @@ export function UploadButtonProvider({ children }: { children: ReactNode }) {
     isUploading,
     show,
     hide,
-    setUploading
+    setUploading,
   };
 
-  return (
-    <UploadButtonContext.Provider value={value}>
-      {children}
-    </UploadButtonContext.Provider>
-  );
+  return <UploadButtonContext.Provider value={value}>{children}</UploadButtonContext.Provider>;
 }
 
 export const useUploadButtonState = () => {
   const context = useContext(UploadButtonContext);
   if (context === undefined) {
-    throw new Error('useUploadButtonState must be used within a UploadButtonProvider');
+    throw new Error("useUploadButtonState must be used within a UploadButtonProvider");
   }
   return context;
-}; 
+};

@@ -1,27 +1,19 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { HTMLMotionProps } from "motion/react";
-import { AnimatePresence, motion } from "motion/react";
+import { Check, Loader2, Upload } from "lucide-react";
+import { AnimatePresence, type HTMLMotionProps, motion } from "motion/react";
 import React from "react";
-import { Upload, Check, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-interface AnimatedUploadButtonProps
-  extends Omit<HTMLMotionProps<"button">, "ref"> {
+interface AnimatedUploadButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
   uploadStatus?: boolean;
   isUploading?: boolean;
   onUpload?: () => void;
   className?: string;
 }
 
-export const AnimatedUploadButton = React.forwardRef<
-  HTMLButtonElement,
-  AnimatedUploadButtonProps
->(
-  (
-    { uploadStatus = false, isUploading = false, onClick, onUpload, className, ...props },
-    ref,
-  ) => {
+export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, AnimatedUploadButtonProps>(
+  ({ uploadStatus = false, isUploading = false, onClick, onUpload, className, ...props }, ref) => {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!uploadStatus && !isUploading) {
         onUpload?.();
