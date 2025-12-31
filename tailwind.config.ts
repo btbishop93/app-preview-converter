@@ -172,16 +172,32 @@ export default {
   					backgroundPosition: 'bottom center'
   				}
   			},
-  			rainbow: {
-  				'0%': {
-  					'background-position': '0%'
-  				},
-  				'100%': {
-  					'background-position': '200%'
-  				}
-  			}
-  		},
-  		animation: {
+			rainbow: {
+				'0%': {
+					'background-position': '0%'
+				},
+				'100%': {
+					'background-position': '200%'
+				}
+			},
+			'dot-glow': {
+				'0%, 100%': {
+					opacity: '0.5'
+				},
+				'50%': {
+					opacity: '0.8'
+				}
+			},
+			'border-beam': {
+				'0%': {
+					'offset-distance': '0%'
+				},
+				'100%': {
+					'offset-distance': '100%'
+				}
+			}
+		},
+		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
   			'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
@@ -193,8 +209,10 @@ export default {
   			shine: 'shine var(--duration) infinite linear',
   			meteor: 'meteor 5s linear infinite',
   			'background-position-spin': 'background-position-spin 3000ms infinite alternate',
-  			rainbow: 'rainbow var(--speed, 2s) infinite linear'
-  		},
+			rainbow: 'rainbow var(--speed, 2s) infinite linear',
+			'dot-glow': 'dot-glow 4s ease-in-out infinite',
+			'border-beam': 'border-beam var(--duration, 6s) linear infinite'
+		},
   		backgroundImage: {
   			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
   			'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'

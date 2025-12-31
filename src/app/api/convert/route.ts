@@ -1,166 +1,175 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import os from 'os';
-import util from 'util';
+import { execFile } from "node:child_process";
+import { promises as fs } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import util from "node:util";
+import { type NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
-// Convert exec to Promise
-const execAsync = util.promisify(exec);
+const execFileAsync = util.promisify(execFile);
+
+// Constants
+const MAX_FILE_SIZE_MB = 500;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const PLATFORM_RESOLUTIONS = {
+  macOS: "1920:1080",
+  iOS: "886:1920",
+} as const;
+
+type Platform = keyof typeof PLATFORM_RESOLUTIONS;
+
+// Check if ffmpeg is available
+async function checkFfmpegAvailable(): Promise<boolean> {
+  try {
+    await execFileAsync("ffmpeg", ["-version"]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Clean up temporary files
+async function cleanupFiles(...filePaths: string[]): Promise<void> {
+  for (const filePath of filePaths) {
+    try {
+      await fs.access(filePath);
+      await fs.unlink(filePath);
+    } catch {
+      // File doesn't exist or can't be deleted - ignore
+    }
+  }
+}
 
 export async function POST(request: NextRequest) {
+  // Check ffmpeg availability first
+  const ffmpegAvailable = await checkFfmpegAvailable();
+  if (!ffmpegAvailable) {
+    return NextResponse.json(
+      {
+        error: "FFmpeg is not installed on the server",
+        details: "Video conversion requires FFmpeg to be installed",
+      },
+      { status: 503 },
+    );
+  }
+
   try {
-    // Check if formData is available
     if (!request.formData) {
-      return NextResponse.json({ error: 'FormData not supported' }, { status: 400 });
+      return NextResponse.json({ error: "FormData not supported" }, { status: 400 });
     }
 
-    // Get form data with the video file
     const formData = await request.formData();
-    const videoFile = formData.get('video') as File;
-    const platform = formData.get('platform') as string || 'macOS';
-    const addSilentAudio = formData.get('addSilentAudio') === 'true';
-    
+    const videoFile = formData.get("video") as File;
+    const platform = (formData.get("platform") as Platform) || "macOS";
+    const addSilentAudio = formData.get("addSilentAudio") === "true";
+
+    // Validation
     if (!videoFile) {
-      return NextResponse.json({ error: 'No video file provided' }, { status: 400 });
+      return NextResponse.json({ error: "No video file provided" }, { status: 400 });
+    }
+
+    if (videoFile.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json(
+        {
+          error: `File too large`,
+          details: `Maximum file size is ${MAX_FILE_SIZE_MB}MB`,
+        },
+        { status: 400 },
+      );
+    }
+
+    if (!["macOS", "iOS"].includes(platform)) {
+      return NextResponse.json(
+        { error: "Invalid platform", details: "Must be macOS or iOS" },
+        { status: 400 },
+      );
     }
 
     // Create temporary file paths
     const tempDir = os.tmpdir();
     const uniqueId = uuidv4();
     const inputPath = path.join(tempDir, `input-${uniqueId}.mp4`);
+    const tempOutputPath = path.join(tempDir, `temp-${uniqueId}.mp4`);
     const outputPath = path.join(tempDir, `output-${uniqueId}.mp4`);
-    
+    const finalPath = path.join(tempDir, `final-${uniqueId}.mp4`);
+
     try {
       // Save the uploaded file to disk
       const videoBuffer = Buffer.from(await videoFile.arrayBuffer());
       await fs.writeFile(inputPath, videoBuffer);
-      console.log(`Input file saved to ${inputPath}`);
-      
-      // Check input file dimensions
-      try {
-        const { stdout } = await execAsync(`ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=s=x:p=0 ${inputPath}`);
-        console.log(`Input file info: ${stdout.trim()}`);
-      } catch (error) {
-        console.error('Error checking input dimensions:', error);
-      }
-      
-      // Apply original scaling commands only
-      let ffmpegCommand = '';
-      
-      if (platform === 'macOS') {
-        // Original command for macOS - exactly as provided
-        ffmpegCommand = `ffmpeg -y -i ${inputPath} -vf "scale=1920:1080:flags=lanczos,setsar=1"`;
-        console.log(`Using macOS command: ${ffmpegCommand}`);
-      } else {
-        // Original command for iOS - exactly as provided
-        ffmpegCommand = `ffmpeg -y -i ${inputPath} -vf "scale=886:1920:flags=lanczos,setsar=1"`;
-        console.log(`Using iOS command: ${ffmpegCommand}`);
-      }
-      
-      // Add silent audio if requested
+
+      const resolution = PLATFORM_RESOLUTIONS[platform];
+      const scaleFilter = `scale=${resolution}:flags=lanczos,setsar=1`;
+
       if (addSilentAudio) {
-        const tempOutputPath = path.join(tempDir, `temp-${uniqueId}.mp4`);
-        
-        try {
-          // First convert video - add output path to command
-          console.log(`Executing command: ${ffmpegCommand} -an ${tempOutputPath}`);
-          const { stdout, stderr } = await execAsync(`${ffmpegCommand} -an ${tempOutputPath}`);
-          console.log('FFmpeg stdout:', stdout);
-          console.log('FFmpeg stderr:', stderr);
-          
-          // Then add silent audio with a modified command that might be more compatible with Apple
-          console.log(`Executing command: ffmpeg -y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=48000 -i ${tempOutputPath} -c:v copy -c:a aac -b:a 128k -shortest ${outputPath}`);
-          const audioResult = await execAsync(`ffmpeg -y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=48000 -i ${tempOutputPath} -c:v copy -c:a aac -b:a 128k -shortest ${outputPath}`);
-          console.log('Audio FFmpeg stdout:', audioResult.stdout);
-          console.log('Audio FFmpeg stderr:', audioResult.stderr);
-        } finally {
-          // Clean up temp file even if there's an error
-          try {
-            await fs.unlink(tempOutputPath).catch(() => {});
-          } catch {
-            // Ignore cleanup errors
-          }
-        }
+        // Convert video without audio first
+        await execFileAsync("ffmpeg", [
+          "-y",
+          "-i",
+          inputPath,
+          "-vf",
+          scaleFilter,
+          "-an",
+          tempOutputPath,
+        ]);
+
+        // Add silent audio track
+        await execFileAsync("ffmpeg", [
+          "-y",
+          "-f",
+          "lavfi",
+          "-i",
+          "anullsrc=channel_layout=stereo:sample_rate=48000",
+          "-i",
+          tempOutputPath,
+          "-c:v",
+          "copy",
+          "-c:a",
+          "aac",
+          "-b:a",
+          "128k",
+          "-shortest",
+          outputPath,
+        ]);
       } else {
-        // Just convert video - add output path to command
-        console.log(`Executing command: ${ffmpegCommand} ${outputPath}`);
-        const { stdout, stderr } = await execAsync(`${ffmpegCommand} ${outputPath}`);
-        console.log('FFmpeg stdout:', stdout);
-        console.log('FFmpeg stderr:', stderr);
+        // Just convert video
+        await execFileAsync("ffmpeg", ["-y", "-i", inputPath, "-vf", scaleFilter, outputPath]);
       }
 
-      // Convert final output to 30fps
-      const finalTempPath = path.join(tempDir, `final-${uniqueId}.mp4`);
-      try {
-        console.log(`Executing command: ffmpeg -y -i ${outputPath} -r 30 ${finalTempPath}`);
-        const fpsResult = await execAsync(`ffmpeg -y -i ${outputPath} -r 30 ${finalTempPath}`);
-        console.log('FPS FFmpeg stdout:', fpsResult.stdout);
-        console.log('FPS FFmpeg stderr:', fpsResult.stderr);
+      // Convert to 30fps (Apple requirement)
+      await execFileAsync("ffmpeg", ["-y", "-i", outputPath, "-r", "30", finalPath]);
 
-        // Move the final temp file to output
-        await fs.rename(finalTempPath, outputPath);
-      } finally {
-        // Clean up final temp file if it exists
-        try {
-          await fs.access(finalTempPath).then(() => 
-            fs.unlink(finalTempPath).catch(() => {})
-          ).catch(() => {});
-        } catch {
-          // Ignore cleanup errors
-        }
-      }
-      
+      // Move final to output path
+      await fs.rename(finalPath, outputPath);
+
       // Read the output file
       const outputBuffer = await fs.readFile(outputPath);
-      
-      // Check the output file dimensions
-      try {
-        const { stdout } = await execAsync(`ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 ${outputPath}`);
-        console.log(`Output file dimensions: ${stdout.trim()}`);
-      } catch (error) {
-        console.error('Error checking output dimensions:', error);
-      }
-      
-      // Check the audio properties if silent audio was added
-      if (addSilentAudio) {
-        try {
-          const { stdout } = await execAsync(`ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels,bit_rate -of default=noprint_wrappers=1 ${outputPath}`);
-          console.log(`Output audio properties: ${stdout.trim()}`);
-        } catch (error) {
-          console.error('Error checking audio properties:', error);
-        }
-      }
-      
-      // Return the converted video
+
+      // Generate filename
+      const filename = `${platform}_Preview${addSilentAudio ? "_with_silent_audio" : ""}.mp4`;
+
       return new NextResponse(outputBuffer, {
         headers: {
-          'Content-Type': 'video/mp4',
-          'Content-Disposition': `attachment; filename="${platform}_Preview${addSilentAudio ? '_with_silent_audio' : ''}.mp4"`,
+          "Content-Type": "video/mp4",
+          "Content-Disposition": `attachment; filename="${filename}"`,
         },
       });
     } finally {
-      // Clean up regardless of success or failure
-      try {
-        // Delete input file if it exists
-        await fs.access(inputPath).then(() => 
-          fs.unlink(inputPath).catch(() => {})
-        ).catch(() => {});
-        
-        // Delete output file if it exists
-        await fs.access(outputPath).then(() => 
-          fs.unlink(outputPath).catch(() => {})
-        ).catch(() => {});
-      } catch {
-        // Ignore cleanup errors
-      }
+      // Clean up all temporary files
+      await cleanupFiles(inputPath, tempOutputPath, outputPath, finalPath);
     }
   } catch (error) {
-    console.error('Error during conversion:', error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+
     return NextResponse.json(
-      { error: 'An error occurred during conversion' },
-      { status: 500 }
+      {
+        error: "Video conversion failed",
+        details:
+          process.env.NODE_ENV === "development"
+            ? errorMessage
+            : "Please try again or use a different video file",
+      },
+      { status: 500 },
     );
   }
-} 
+}

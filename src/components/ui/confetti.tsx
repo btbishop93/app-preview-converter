@@ -6,8 +6,9 @@ import type {
   Options as ConfettiOptions,
 } from "canvas-confetti";
 import confetti from "canvas-confetti";
+import type React from "react";
 import type { ReactNode } from "react";
-import React, {
+import {
   createContext,
   forwardRef,
   useCallback,
@@ -17,7 +18,7 @@ import React, {
   useRef,
 } from "react";
 
-import { Button, ButtonProps } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 
 type Api = {
   fire: (options?: ConfettiOptions) => void;
@@ -110,16 +111,11 @@ ConfettiComponent.displayName = "Confetti";
 export const Confetti = ConfettiComponent;
 
 interface ConfettiButtonProps extends ButtonProps {
-  options?: ConfettiOptions &
-    ConfettiGlobalOptions & { canvas?: HTMLCanvasElement };
+  options?: ConfettiOptions & ConfettiGlobalOptions & { canvas?: HTMLCanvasElement };
   children?: React.ReactNode;
 }
 
-const ConfettiButtonComponent = ({
-  options,
-  children,
-  ...props
-}: ConfettiButtonProps) => {
+const ConfettiButtonComponent = ({ options, children, ...props }: ConfettiButtonProps) => {
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     try {
       const rect = event.currentTarget.getBoundingClientRect();

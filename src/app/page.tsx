@@ -1,12 +1,13 @@
 import AppPreviewContainer from "@/components/app-preview-container";
-import { WarpBackground } from "@/components/magicui/warp-background";
+import { DotPattern } from "@/components/ui/dot-pattern";
 
 export default function Home() {
   return (
-    <WarpBackground className="min-h-screen">
-      <div className="overflow-hidden">
+    <div className="relative min-h-screen bg-neutral-950 overflow-hidden">
+      <DotPattern className="text-neutral-700/50" width={24} height={24} cr={1.5} glow />
+      <div className="relative z-10">
         <AppPreviewContainer />
       </div>
-    </WarpBackground>
+    </div>
   );
 }

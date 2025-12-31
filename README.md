@@ -2,90 +2,131 @@
 
 Convert your videos to the required format for macOS and iOS App Store app previews.
 
+**Why this exists:** When uploading MP4 app recordings to Apple's App Store Connect, uploads often fail silently without any indication why. Apple secretly checks for specific video formatting requirements. This tool applies those formats to your video so it can be properly uploaded.
+
 ## Features
 
 - Convert videos to macOS App Store format (1920×1080)
 - Convert videos to iOS App Store format (886×1920)
-- Add silent audio track (fixes Apple upload issues)
-- Fast server-side processing with native FFmpeg
-- Progress tracking for upload and download
-- Instant preview of converted videos
+- Add silent audio track (fixes common Apple upload rejections)
+- Fast server-side processing with FFmpeg
+- Desktop-only (video processing requires desktop browser)
+
+## Requirements
+
+### System Requirements
+
+- **Node.js** 18.x or higher
+- **FFmpeg** installed on the server (required for video processing)
+
+### Video Requirements
+
+- Format: MP4
+- Duration: 15-30 seconds
+- Max file size: 500MB
 
 ## Server Requirements
 
-This application requires FFmpeg to be installed on the server. For optimal performance, follow these installation instructions:
+This application requires FFmpeg to be installed on the server.
 
 ### macOS
 
 ```bash
-# Using Homebrew
 brew install ffmpeg
-
-# Verify installation
 ffmpeg -version
 ```
 
 ### Ubuntu/Debian
 
 ```bash
-# Update package lists
 sudo apt update
-
-# Install FFmpeg
 sudo apt install -y ffmpeg
-
-# Verify installation
 ffmpeg -version
 ```
 
 ### CentOS/RHEL/Fedora
 
 ```bash
-# For CentOS/RHEL 8 or newer and Fedora
 sudo dnf install -y ffmpeg ffmpeg-devel
-
-# Verify installation
 ffmpeg -version
 ```
 
-### Windows Server
+### Windows
 
-1. Download FFmpeg from the [official website](https://www.ffmpeg.org/download.html)
-2. Extract the files to a folder, e.g., `C:\ffmpeg`
-3. Add the `bin` folder to your system PATH
-4. Verify by running `ffmpeg -version` in the command prompt
+1. Download FFmpeg from [ffmpeg.org/download.html](https://www.ffmpeg.org/download.html)
+2. Extract to `C:\ffmpeg`
+3. Add `C:\ffmpeg\bin` to system PATH
+4. Verify: `ffmpeg -version`
 
 ## Development
 
 ```bash
 # Install dependencies
-pnpm install
+bun install
 
 # Start the development server
-pnpm dev
+bun dev
+
+# Run tests
+bun test
+
+# Run tests with coverage
+bun test:coverage
+
+# Lint
+bun lint
+
+# Build for production
+bun run build
 ```
 
-## Building for Production
+## Tech Stack
 
-```bash
-# Build the application
-pnpm build
+- **Framework:** Next.js 16
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **UI Components:** shadcn/ui + Magic UI
+- **Animation:** Motion (Framer Motion)
+- **Testing:** Vitest + React Testing Library
+- **Video Processing:** FFmpeg (server-side)
 
-# Start the production server
-pnpm start
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/convert/        # Video conversion API endpoint
+│   └── page.tsx            # Main page
+├── components/
+│   ├── magicui/            # Magic UI components
+│   ├── providers/          # React context providers
+│   ├── ui/                 # shadcn/ui components
+│   └── video-convert/      # Video conversion flow
+├── hooks/                  # Custom React hooks
+├── lib/                    # Utility functions
+├── types/                  # TypeScript types
+└── __tests__/              # Test files
 ```
 
 ## Deployment
 
-This application can be deployed to any Node.js hosting platforms that support Next.js, such as:
+Deploy to any Node.js platform that supports Next.js:
 
 - Vercel
-- Netlify
-- AWS Amplify
+- Railway
+- Render
 - DigitalOcean App Platform
-- Heroku
+- AWS (EC2, ECS, Lambda)
 
-**Important:** Ensure that FFmpeg is installed on your deployment server for the video conversion to work properly.
+**Important:** Ensure FFmpeg is installed on your deployment server. The app will return a 503 error if FFmpeg is not available.
+
+### Environment Variables
+
+No environment variables are required for basic operation. For production, consider:
+
+```env
+NODE_ENV=production
+```
 
 ## License
 

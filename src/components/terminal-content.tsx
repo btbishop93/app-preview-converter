@@ -1,30 +1,11 @@
 "use client";
 
-import { Terminal } from "@/components/magicui/terminal";
-import { TypingAnimation } from "@/components/magicui/terminal";
-import { AnimatedSpan } from "@/components/magicui/terminal";
-import { Button } from "@/components/ui/button";
-import { AnimatedUploadButton } from "@/components/magicui/animated-upload-button";
-import { useState, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
-import { RainbowButton } from "./magicui/rainbow-button";
+import { useEffect, useRef, useState } from "react";
+import { TerminalButtons } from "@/components/terminal-buttons";
+import { AnimatedSpan, TERMINAL_TIMING, Terminal, TypingAnimation } from "@/components/ui/terminal";
 import { useUploadButtonState } from "@/hooks/useUploadButtonState";
-import { BMCButton } from "@/components/ui/bmc-button";
-
-export interface Button {
-  text: string;
-  action: string;
-  type?: 'rainbow' | 'default' | 'bmc';
-  onAction?: (file?: File) => void;
-}
-
-export interface TerminalMessage {
-  text: string;
-  delay: number;
-  type?: 'info' | 'prompt' | 'success' | 'buttons-container' | 'button-inline' | 'error';
-  buttons?: Button[];
-  action?: string;
-}
+import { cn } from "@/lib/utils";
+import type { Button as ButtonType, TerminalMessage } from "@/types/terminal";
 
 interface TerminalContentProps {
   messages: TerminalMessage[];
@@ -33,17 +14,93 @@ interface TerminalContentProps {
   resetUploadState?: () => void;
 }
 
-export default function TerminalContent({ messages, onUploadComplete, onButtonClick, resetUploadState }: TerminalContentProps) {
+export default function TerminalContent({
+  messages,
+  onUploadComplete,
+  onButtonClick,
+  resetUploadState,
+}: TerminalContentProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [lastAction, setLastAction] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isVisible, isUploading, setUploading } = useUploadButtonState();
 
+  // Track which message index is currently allowed to start typing
+  // All messages up to this index can show, message AT this index is typing
+  const [activeMessageIndex, setActiveMessageIndex] = useState(0);
+
+  // Track which messages have completed typing
+  const [completedMessages, setCompletedMessages] = useState<Set<number>>(new Set());
+
+  // Store cumulative delay info at time of message addition
+  const messageMetaRef = useRef<Map<number, { addedAt: number; batchStart: number }>>(new Map());
+  const prevMessageCountRef = useRef(0);
+
+  // Version counter to force component remount when messages are replaced
+  const [messageVersion, setMessageVersion] = useState(0);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  // When messages change, track batch info
+  useEffect(() => {
+    const prevCount = prevMessageCountRef.current;
+    const newCount = messages.length;
+
+    if (newCount > prevCount) {
+      // New messages added - record when this batch started
+      const now = Date.now();
+      for (let i = prevCount; i < newCount; i++) {
+        messageMetaRef.current.set(i, {
+          addedAt: now,
+          batchStart: prevCount,
+        });
+      }
+      // Allow the first new message to start after its delay
+      const firstNewMessage = messages[prevCount];
+      if (firstNewMessage) {
+        setTimeout(() => {
+          setActiveMessageIndex((prev) => Math.max(prev, prevCount));
+        }, firstNewMessage.delay);
+      }
+    } else if (newCount < prevCount || (newCount > 0 && prevCount > 0 && newCount !== prevCount)) {
+      // Messages replaced or reset - increment version to force remount
+      messageMetaRef.current.clear();
+      setActiveMessageIndex(0);
+      setCompletedMessages(new Set());
+      setMessageVersion((v) => v + 1);
+
+      // Schedule first message to start after its delay
+      const firstMessage = messages[0];
+      if (firstMessage) {
+        setTimeout(() => {
+          setActiveMessageIndex(0);
+        }, firstMessage.delay);
+      }
+    }
+
+    prevMessageCountRef.current = newCount;
+  }, [messages]);
+
+  const handleMessageComplete = (index: number) => {
+    // Mark this message as completed
+    setCompletedMessages((prev) => new Set(prev).add(index));
+
+    // When a message finishes, allow the next one to start (after its delay)
+    const nextIndex = index + 1;
+    if (nextIndex < messages.length) {
+      const nextMessage = messages[nextIndex];
+      setTimeout(() => {
+        setActiveMessageIndex((prev) => Math.max(prev, nextIndex));
+      }, nextMessage.delay);
+    }
+  };
+
   const handleFileUpload = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     fileInputRef.current?.click();
   };
 
@@ -52,37 +109,41 @@ export default function TerminalContent({ messages, onUploadComplete, onButtonCl
     if (file) {
       setUploading(true);
       try {
-        // Find the upload button and call its onAction handler
-        const uploadMessage = messages.find(m => m.buttons?.some(b => b.action === 'upload'));
-        const uploadButton = uploadMessage?.buttons?.find(b => b.action === 'upload');
-        
-        // Call the onAction handler
+        const uploadMessage = messages.find((m) => m.buttons?.some((b) => b.action === "upload"));
+        const uploadButton = uploadMessage?.buttons?.find((b) => b.action === "upload");
+
         await uploadButton?.onAction?.(file);
-        
-        // Check if the last non-prompt message is a success message
-        const lastNonPromptMessage = [...messages].reverse().find(m => m.type !== 'prompt');
-        if (lastNonPromptMessage?.type === 'success') {
-          setLastAction('upload');
+
+        const lastNonPromptMessage = [...messages].reverse().find((m) => m.type !== "prompt");
+        if (lastNonPromptMessage?.type === "success") {
+          setLastAction("upload");
           onUploadComplete?.();
         }
       } catch (error) {
-        console.error('Upload failed:', error);
+        console.error("Upload failed:", error);
       } finally {
         setUploading(false);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     }
   };
 
-  const handleButtonClick = (button: Button) => {
+  const handleButtonClick = (button: ButtonType) => {
     button.onAction?.();
     onButtonClick?.(button.action);
 
-    // If this is a restart action, reset all states
-    if (button.action === 'restart') {
+    if (button.action === "restart") {
       setUploading(false);
       setLastAction(null);
+      setActiveMessageIndex(0);
+      setCompletedMessages(new Set());
+      setMessageVersion((v) => v + 1);
+      messageMetaRef.current.clear();
+      prevMessageCountRef.current = 0;
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
       resetUploadState?.();
     } else {
@@ -90,17 +151,15 @@ export default function TerminalContent({ messages, onUploadComplete, onButtonCl
     }
   };
 
-  const renderButtons = (buttons: Button[], messageIndex: number) => {
-    // For upload buttons, check visibility from our hook
-    const hasUploadButton = buttons.some(b => b.action === 'upload');
+  const renderButtons = (buttons: ButtonType[], messageIndex: number) => {
+    const hasUploadButton = buttons.some((b) => b.action === "upload");
     if (hasUploadButton && !isVisible) {
       return null;
     }
 
-    // For non-upload buttons, keep the original hiding logic
     if (!hasUploadButton) {
-      const messageWithLastAction = messages.findIndex(m => 
-        m.buttons?.some(b => b.action === lastAction)
+      const messageWithLastAction = messages.findIndex((m) =>
+        m.buttons?.some((b) => b.action === lastAction),
       );
       if (messageWithLastAction !== -1 && messageIndex <= messageWithLastAction) {
         return null;
@@ -108,90 +167,46 @@ export default function TerminalContent({ messages, onUploadComplete, onButtonCl
     }
 
     return (
-      <div className="flex items-center flex-wrap gap-2 mt-2">
-        {buttons.map((button, buttonIndex) => {
-          if (button.action === 'upload' && !isVisible) {
-            return null;
-          }
-          
-          if (button.action === 'upload') {
-            return (
-              <div key={buttonIndex} className="flex items-center">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="video/*"
-                  className="hidden"
-                />
-                <AnimatedUploadButton
-                  uploadStatus={!isVisible}
-                  isUploading={isUploading}
-                  onUpload={handleFileUpload}
-                  className="w-40"
-                />
-              </div>
-            );
-          }
-          
-          // Use BMCButton for buttons with type="bmc"
-          if (button.type === 'bmc') {
-            return (
-              <BMCButton 
-                key={buttonIndex}
-                link="https://buymeacoffee.com/brendenbishop"
-                className="w-36 cursor-pointer hover:drop-shadow-md hover:scale-105 transition-all duration-300"
-              />
-            );
-          }
-          
-          // Use RainbowButton for buttons with type="rainbow"
-          if (button.type === 'rainbow') {
-            return (
-              <RainbowButton 
-                key={buttonIndex}
-                onClick={() => handleButtonClick(button)}
-                className="w-fit"
-              >
-                {button.text}
-              </RainbowButton>
-            );
-          }
-          
-          return (
-            <Button 
-              key={buttonIndex}
-              variant={button.action === 'restart' ? 'outline' : 'default'}
-              className="w-fit"
-              onClick={() => handleButtonClick(button)}
-            >
-              {button.text}
-            </Button>
-          );
-        })}
-      </div>
+      <TerminalButtons
+        buttons={buttons}
+        isVisible={isVisible}
+        isUploading={isUploading}
+        fileInputRef={fileInputRef}
+        onFileUpload={handleFileUpload}
+        onFileChange={handleFileChange}
+        onButtonClick={handleButtonClick}
+      />
     );
   };
 
   const renderMessage = (message: TerminalMessage, index: number) => {
+    const canStart = index <= activeMessageIndex;
+    const isComplete = completedMessages.has(index);
+
+    // Don't render messages that can't start yet
+    if (!canStart) {
+      return null;
+    }
+
     return (
-      <div key={index}>
-        <TypingAnimation 
-          delay={message.delay} 
-          duration={50}
+      <div key={`${messageVersion}-${index}`}>
+        <TypingAnimation
+          delay={0} // No delay - we control start via activeMessageIndex
+          duration={TERMINAL_TIMING.TYPING_SPEED_MS}
+          onComplete={() => handleMessageComplete(index)}
           className={cn(
             "break-words w-full",
-            message.type === 'prompt' && 'text-blue-500',
-            message.type === 'info' && 'text-neutral-400',
-            message.type === 'success' && 'text-green-500',
-            message.type === 'error' && 'text-red-500'
+            message.type === "prompt" && "text-cyan-400",
+            message.type === "info" && "text-neutral-400",
+            message.type === "success" && "text-emerald-400",
+            message.type === "error" && "text-red-400",
           )}
         >
           {message.text}
         </TypingAnimation>
-        
-        {message.buttons && (
-          <AnimatedSpan delay={message.delay + (message.text.length * 50) + 500}>
+
+        {message.buttons && isComplete && (
+          <AnimatedSpan delay={TERMINAL_TIMING.BUTTON_APPEAR_DELAY_MS}>
             {renderButtons(message.buttons, index)}
           </AnimatedSpan>
         )}
@@ -201,11 +216,7 @@ export default function TerminalContent({ messages, onUploadComplete, onButtonCl
 
   return (
     <Terminal title="App Preview Converter">
-      {isMounted && (
-        <>
-          {messages.map((message, index) => renderMessage(message, index))}
-        </>
-      )}
+      {isMounted && <>{messages.map((message, index) => renderMessage(message, index))}</>}
     </Terminal>
   );
-} 
+}
