@@ -215,7 +215,7 @@ export default function TerminalContent({
   };
 
   return (
-    <Terminal title="App Preview Converter">
+    <Terminal>
       {isMounted && <>{messages.map((message, index) => renderMessage(message, index))}</>}
     </Terminal>
   );
