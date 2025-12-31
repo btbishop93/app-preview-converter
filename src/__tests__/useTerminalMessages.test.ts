@@ -90,7 +90,7 @@ describe("useTerminalMessages", () => {
     expect(audioPrompt.buttons?.[1].action).toBe("audio-no");
   });
 
-  it("should add error message with warning emoji", () => {
+  it("should add error message with bruised apple indicator", () => {
     const { result } = renderHook(() => useTerminalMessages());
 
     act(() => {
@@ -98,7 +98,7 @@ describe("useTerminalMessages", () => {
     });
 
     expect(result.current.messages[0].type).toBe("error");
-    expect(result.current.messages[0].text).toContain("⚠️");
+    expect(result.current.messages[0].text).toContain("Bruised apple");
     expect(result.current.messages[0].text).toContain("Something went wrong");
   });
 
@@ -129,6 +129,6 @@ describe("useTerminalMessages", () => {
 
     // Support message replaces all messages
     expect(result.current.messages).toHaveLength(1);
-    expect(result.current.messages[0].text).toContain("done");
+    expect(result.current.messages[0].text).toContain("pressed");
   });
 });

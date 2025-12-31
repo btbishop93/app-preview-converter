@@ -1,8 +1,8 @@
-# App Preview Converter
+# 🍎 Ciderpress
 
-Convert your videos to the required format for macOS and iOS App Store app previews.
+Press your app preview videos into App Store perfection.
 
-**Why this exists:** When uploading MP4 app recordings to Apple's App Store Connect, uploads often fail silently without any indication why. Apple secretly checks for specific video formatting requirements. This tool applies those formats to your video so it can be properly uploaded.
+**Why this exists:** When uploading MP4 app recordings to Apple's App Store Connect, uploads often fail silently without any indication why. Apple secretly checks for specific video formatting requirements. Ciderpress applies those formats to your video so it can be properly uploaded.
 
 ## Features
 
@@ -73,8 +73,8 @@ bun test
 # Run tests with coverage
 bun test:coverage
 
-# Lint
-bun lint
+# Lint & format check
+bun run check
 
 # Build for production
 bun run build
@@ -87,6 +87,7 @@ bun run build
 - **Styling:** Tailwind CSS
 - **UI Components:** shadcn/ui + Magic UI
 - **Animation:** Motion (Framer Motion)
+- **Linting:** Biome
 - **Testing:** Vitest + React Testing Library
 - **Video Processing:** FFmpeg (server-side)
 
@@ -98,9 +99,8 @@ src/
 │   ├── api/convert/        # Video conversion API endpoint
 │   └── page.tsx            # Main page
 ├── components/
-│   ├── magicui/            # Magic UI components
 │   ├── providers/          # React context providers
-│   ├── ui/                 # shadcn/ui components
+│   ├── ui/                 # UI components (shadcn + custom)
 │   └── video-convert/      # Video conversion flow
 ├── hooks/                  # Custom React hooks
 ├── lib/                    # Utility functions

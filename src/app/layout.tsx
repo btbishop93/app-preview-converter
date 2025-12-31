@@ -10,21 +10,30 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "App Preview Converter",
+  title: "Ciderpress - App Preview Converter",
   description:
-    "Convert your app preview videos for macOS or iOS App Store submissions. Fixes common Apple upload rejections with proper formatting.",
-  keywords: ["app preview", "app store", "video converter", "macOS", "iOS", "ffmpeg", "apple"],
+    "Press your app preview videos into App Store perfection. Fixes common Apple upload rejections with proper formatting for macOS and iOS.",
+  keywords: [
+    "app preview",
+    "app store",
+    "video converter",
+    "macOS",
+    "iOS",
+    "ffmpeg",
+    "apple",
+    "ciderpress",
+  ],
   authors: [{ name: "Brenden Bishop" }],
   openGraph: {
-    title: "App Preview Converter",
-    description: "Convert your app preview videos for macOS or iOS App Store submissions",
+    title: "Ciderpress",
+    description: "Press your app preview videos into App Store perfection",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary",
-    title: "App Preview Converter",
-    description: "Convert your app preview videos for macOS or iOS App Store submissions",
+    title: "Ciderpress",
+    description: "Press your app preview videos into App Store perfection",
   },
   robots: {
     index: true,

@@ -44,7 +44,7 @@ export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, Animated
             >
               <span className="inline-flex items-center">
                 <Check className="mr-2 size-4" />
-                Uploaded
+                Picked!
               </span>
             </motion.span>
           </motion.button>
@@ -68,7 +68,7 @@ export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, Animated
             >
               <span className="inline-flex items-center">
                 <Loader2 className="mr-2 size-4 animate-spin" />
-                Uploading...
+                Picking...
               </span>
             </motion.span>
           </motion.button>
@@ -92,7 +92,7 @@ export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, Animated
               exit={{ x: 50, transition: { duration: 0.1 } }}
             >
               <span className="group inline-flex items-center">
-                Upload
+                Pick Apple
                 <Upload className="ml-2 size-4 transition-transform duration-300 group-hover:translate-y-[-2px]" />
               </span>
             </motion.span>
