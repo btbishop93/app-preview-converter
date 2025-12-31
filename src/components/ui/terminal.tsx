@@ -3,6 +3,7 @@
 import { type MotionProps, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BorderBeam } from "@/components/ui/border-beam";
+import { CiderpressLogo } from "@/components/ui/ciderpress-logo";
 import { cn } from "@/lib/utils";
 
 // Animation timing constants
@@ -237,7 +238,11 @@ export const Terminal = ({ children, className, title }: TerminalProps) => {
             <div className="h-3 w-3 rounded-full bg-yellow-500/80 hover:bg-yellow-500 transition-colors"></div>
             <div className="h-3 w-3 rounded-full bg-green-500/80 hover:bg-green-500 transition-colors"></div>
           </div>
-          <div className="text-sm font-mono text-neutral-300 tracking-tight">{title}</div>
+          {title ? (
+            <div className="text-sm font-mono text-neutral-300 tracking-tight">{title}</div>
+          ) : (
+            <CiderpressLogo size="sm" showText />
+          )}
         </div>
       </div>
 

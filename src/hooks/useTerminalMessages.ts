@@ -16,13 +16,18 @@ export const useTerminalMessages = () => {
   const initializeMessages = useCallback(() => {
     const initialMessages: TerminalMessage[] = [
       {
-        text: "Welcome to App Preview Converter v1.0.0",
+        text: "🍎 Welcome to Ciderpress v1.0.0",
         delay: TIMING.INSTANT, // First message starts immediately
         type: "info",
       },
       {
-        text: "This tool helps you convert videos for App Store submissions",
+        text: "App preview video rejected? Apple keeps the reasons to themselves.",
         delay: TIMING.BEAT, // Brief pause after welcome
+        type: "info",
+      },
+      {
+        text: "We'll press your video into the format they actually accept.",
+        delay: TIMING.BEAT,
         type: "info",
       },
     ];
@@ -33,12 +38,12 @@ export const useTerminalMessages = () => {
     setMessages((prev) => [
       ...prev,
       {
-        text: "Upload a video to begin:",
+        text: "Drop an apple in the press to begin:",
         type: "prompt",
         delay: TIMING.PAUSE, // Pause before prompt
         buttons: [
           {
-            text: "Upload",
+            text: "Pick Apple",
             action: "upload",
             onAction: (file?: File) => {
               if (file) {
@@ -55,7 +60,7 @@ export const useTerminalMessages = () => {
     setMessages((prev) => [
       ...prev,
       {
-        text: `✓ ${fileName} uploaded successfully!`,
+        text: `🍏 ${fileName} picked successfully!`,
         delay: TIMING.INSTANT, // Immediate response
         type: "success",
       },
@@ -66,7 +71,7 @@ export const useTerminalMessages = () => {
     setMessages((prev) => [
       ...prev,
       {
-        text: "Which platform are you targeting?",
+        text: "Which orchard are you targeting?",
         delay: TIMING.BEAT, // Small pause after success
         type: "prompt",
         buttons: [
@@ -82,7 +87,7 @@ export const useTerminalMessages = () => {
     setMessages((prev) => [
       ...prev,
       {
-        text: `✓ Platform set to ${platform} (${resolution})`,
+        text: `✓ Orchard set to ${platform} (${resolution})`,
         delay: TIMING.INSTANT,
         type: "success",
       },
@@ -131,7 +136,7 @@ export const useTerminalMessages = () => {
     setMessages((prev) => [
       ...prev,
       {
-        text: "Starting video conversion...",
+        text: "🍏 Pressing...",
         delay: TIMING.BEAT,
         type: "info",
       },
@@ -142,12 +147,12 @@ export const useTerminalMessages = () => {
     setMessages((prev) => [
       ...prev,
       {
-        text: "✓ Video is now ready for App Preview upload!",
+        text: "🧃 Fresh cider ready! Your video is App Store approved.",
         delay: TIMING.PAUSE, // Pause for effect
         type: "success",
         buttons: [
-          { text: "Download", action: "download", type: "rainbow" },
-          { text: "New Conversion", action: "restart" },
+          { text: "Bottle It", action: "download", type: "rainbow" },
+          { text: "Press Another", action: "restart" },
         ],
       },
     ]);
@@ -156,12 +161,12 @@ export const useTerminalMessages = () => {
   const addSupportMessage = useCallback(() => {
     setMessages([
       {
-        text: "All done. Thank you & enjoy!",
+        text: "🍎 All pressed. Thank you & enjoy your cider!",
         delay: TIMING.INSTANT,
         type: "info",
         buttons: [
           { text: "Buy me a coffee", action: "bmc", type: "bmc" },
-          { text: "New Conversion", action: "restart" },
+          { text: "Press Another", action: "restart" },
         ],
       },
     ]);
@@ -171,7 +176,7 @@ export const useTerminalMessages = () => {
     setMessages((prev) => [
       ...prev,
       {
-        text: `⚠️ ${message}`,
+        text: `🍂 Bruised apple: ${message}`,
         delay: TIMING.INSTANT,
         type: "error",
       },

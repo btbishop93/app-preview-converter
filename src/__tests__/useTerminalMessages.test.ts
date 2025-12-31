@@ -16,7 +16,7 @@ describe("useTerminalMessages", () => {
       result.current.initializeMessages();
     });
 
-    expect(result.current.messages).toHaveLength(2);
+    expect(result.current.messages).toHaveLength(3);
     expect(result.current.messages[0].text).toContain("Welcome");
     expect(result.current.messages[0].type).toBe("info");
   });
@@ -30,8 +30,8 @@ describe("useTerminalMessages", () => {
       result.current.addUploadPrompt(mockCallback);
     });
 
-    expect(result.current.messages).toHaveLength(3);
-    const uploadPrompt = result.current.messages[2];
+    expect(result.current.messages).toHaveLength(4);
+    const uploadPrompt = result.current.messages[3];
     expect(uploadPrompt.type).toBe("prompt");
     expect(uploadPrompt.buttons).toBeDefined();
     expect(uploadPrompt.buttons?.[0].action).toBe("upload");
@@ -45,7 +45,7 @@ describe("useTerminalMessages", () => {
       result.current.addPlatformPrompt();
     });
 
-    const platformPrompt = result.current.messages[2];
+    const platformPrompt = result.current.messages[3];
     expect(platformPrompt.type).toBe("prompt");
     expect(platformPrompt.buttons).toHaveLength(2);
     expect(platformPrompt.buttons?.[0].action).toBe("macos");
@@ -90,7 +90,7 @@ describe("useTerminalMessages", () => {
     expect(audioPrompt.buttons?.[1].action).toBe("audio-no");
   });
 
-  it("should add error message with warning emoji", () => {
+  it("should add error message with bruised apple indicator", () => {
     const { result } = renderHook(() => useTerminalMessages());
 
     act(() => {
@@ -98,7 +98,7 @@ describe("useTerminalMessages", () => {
     });
 
     expect(result.current.messages[0].type).toBe("error");
-    expect(result.current.messages[0].text).toContain("⚠️");
+    expect(result.current.messages[0].text).toContain("Bruised apple");
     expect(result.current.messages[0].text).toContain("Something went wrong");
   });
 
@@ -129,6 +129,6 @@ describe("useTerminalMessages", () => {
 
     // Support message replaces all messages
     expect(result.current.messages).toHaveLength(1);
-    expect(result.current.messages[0].text).toContain("done");
+    expect(result.current.messages[0].text).toContain("pressed");
   });
 });
