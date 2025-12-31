@@ -21,8 +21,13 @@ export const useTerminalMessages = () => {
         type: "info",
       },
       {
-        text: "Press your app preview videos into App Store perfection",
+        text: "App preview video rejected? Apple keeps the reasons to themselves.",
         delay: TIMING.BEAT, // Brief pause after welcome
+        type: "info",
+      },
+      {
+        text: "We'll press your video into the format they actually accept.",
+        delay: TIMING.BEAT,
         type: "info",
       },
     ];
