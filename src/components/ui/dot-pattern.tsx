@@ -19,7 +19,12 @@ interface DotPatternProps {
   glow?: boolean;
 }
 
-export function DotPattern({ width = 48, height = 48, className, glow = false }: DotPatternProps) {
+export function DotPattern({
+  width = 48,
+  height = 48,
+  className,
+  glow = false,
+}: DotPatternProps) {
   // Create a very large grid to ensure full coverage on any screen (4K+)
   const cols = 100;
   const rows = 60;
@@ -41,8 +46,13 @@ export function DotPattern({ width = 48, height = 48, className, glow = false }:
             top: row * height + height / 2 - 6,
           }}
         >
-          <Apple size={12} color={color} strokeWidth={1.5} style={{ opacity: 0.35 }} />
-        </div>,
+          <Apple
+            size={12}
+            color={color}
+            strokeWidth={1.5}
+            style={{ opacity: 0.35 }}
+          />
+        </div>
       );
     }
   }
@@ -53,7 +63,7 @@ export function DotPattern({ width = 48, height = 48, className, glow = false }:
       className={cn(
         "pointer-events-none fixed inset-0 overflow-hidden",
         glow && "animate-dot-glow",
-        className,
+        className
       )}
       style={{ width: cols * width, height: rows * height }}
     >
