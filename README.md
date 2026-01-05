@@ -9,54 +9,26 @@ Press your app preview videos into App Store perfection.
 - Convert videos to macOS App Store format (1920×1080)
 - Convert videos to iOS App Store format (886×1920)
 - Add silent audio track (fixes common Apple upload rejections)
-- Fast server-side processing with FFmpeg
+- **100% client-side processing** - your video never leaves your browser
 - Desktop-only (video processing requires desktop browser)
 
 ## Requirements
 
 ### System Requirements
 
-- **Node.js** 18.x or higher
-- **FFmpeg** installed on the server (required for video processing)
+- **Node.js** 18.x or higher (for development/hosting)
+- **Modern browser** with SharedArrayBuffer support (Chrome, Firefox, Edge)
 
 ### Video Requirements
 
 - Format: MP4
-- Duration: 15-30 seconds
-- Max file size: 500MB
+- Duration: 15-30 seconds (App Store limit)
 
-## Server Requirements
+## How It Works
 
-This application requires FFmpeg to be installed on the server.
+Ciderpress uses [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm) to process videos entirely in your browser using WebAssembly. No server-side processing required.
 
-### macOS
-
-```bash
-brew install ffmpeg
-ffmpeg -version
-```
-
-### Ubuntu/Debian
-
-```bash
-sudo apt update
-sudo apt install -y ffmpeg
-ffmpeg -version
-```
-
-### CentOS/RHEL/Fedora
-
-```bash
-sudo dnf install -y ffmpeg ffmpeg-devel
-ffmpeg -version
-```
-
-### Windows
-
-1. Download FFmpeg from [ffmpeg.org/download.html](https://www.ffmpeg.org/download.html)
-2. Extract to `C:\ffmpeg`
-3. Add `C:\ffmpeg\bin` to system PATH
-4. Verify: `ffmpeg -version`
+The first time you convert a video, the app downloads the FFmpeg WASM core (~31MB). This is cached by your browser for future use.
 
 ## Development
 
@@ -89,14 +61,13 @@ bun run build
 - **Animation:** Motion (Framer Motion)
 - **Linting:** Biome
 - **Testing:** Vitest + React Testing Library
-- **Video Processing:** FFmpeg (server-side)
+- **Video Processing:** ffmpeg.wasm (client-side WebAssembly)
 
 ## Project Structure
 
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── api/convert/        # Video conversion API endpoint
 │   └── page.tsx            # Main page
 ├── components/
 │   ├── providers/          # React context providers
@@ -110,22 +81,22 @@ src/
 
 ## Deployment
 
-Deploy to any Node.js platform that supports Next.js:
+Deploy to any static hosting or Node.js platform:
 
-- Vercel
-- Railway
-- Render
-- DigitalOcean App Platform
-- AWS (EC2, ECS, Lambda)
+- Vercel (recommended)
+- Netlify
+- Cloudflare Pages
+- Any static host
 
-**Important:** Ensure FFmpeg is installed on your deployment server. The app will return a 503 error if FFmpeg is not available.
+No special server configuration required since all video processing happens client-side.
 
-### Environment Variables
+### Required Headers
 
-No environment variables are required for basic operation. For production, consider:
+The app requires these security headers for SharedArrayBuffer support (already configured in `next.config.mjs`):
 
-```env
-NODE_ENV=production
+```
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Opener-Policy: same-origin
 ```
 
 ## License
