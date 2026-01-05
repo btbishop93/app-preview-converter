@@ -57,7 +57,7 @@ export function CiderpressLogo({ size = "md", className, showText = false }: Cid
 
       {/* Wordmark */}
       {showText && (
-        <span className={cn("font-mono font-bold tracking-tight text-white", text)}>
+        <span className={cn("font-mono font-bold tracking-tight text-stone-800", text)}>
           Ciderpress
         </span>
       )}

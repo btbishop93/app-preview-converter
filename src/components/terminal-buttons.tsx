@@ -82,7 +82,7 @@ export function TerminalButtons({
             className={cn(
               "w-fit",
               button.action === "restart" &&
-                "border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-neutral-100",
+                "border-stone-300 text-stone-600 hover:bg-stone-100 hover:text-stone-800",
             )}
             onClick={() => onButtonClick(button)}
           >

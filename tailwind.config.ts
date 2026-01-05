@@ -15,6 +15,14 @@ export default {
   			ring: 'hsl(var(--ring))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+  			apple: {
+  				green: '#61bb46',
+  				yellow: '#fdb827',
+  				orange: '#f5821f',
+  				red: '#e03a3e',
+  				purple: '#963d97',
+  				blue: '#009ddc',
+  			},
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
@@ -54,7 +62,8 @@ export default {
   			'color-2': 'hsl(var(--color-2))',
   			'color-3': 'hsl(var(--color-3))',
   			'color-4': 'hsl(var(--color-4))',
-  			'color-5': 'hsl(var(--color-5))'
+  			'color-5': 'hsl(var(--color-5))',
+  			'color-6': 'hsl(var(--color-6))'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

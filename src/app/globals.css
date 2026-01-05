@@ -29,11 +29,13 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --color-1: 0 100% 63%;
-    --color-2: 270 100% 63%;
-    --color-3: 210 100% 63%;
-    --color-4: 195 100% 63%;
-    --color-5: 90 100% 63%;
+    /* Apple retro colors (1977-1999 logo) */
+    --color-1: 107 48% 50%;  /* green #61bb46 */
+    --color-2: 42 98% 57%;   /* yellow #fdb827 */
+    --color-3: 28 91% 54%;   /* orange #f5821f */
+    --color-4: 358 73% 55%;  /* red #e03a3e */
+    --color-5: 300 42% 41%;  /* purple #963d97 */
+    --color-6: 197 100% 43%; /* blue #009ddc */
   }
 
   .dark {
@@ -61,11 +63,13 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --color-1: 180 100% 63%;
-    --color-2: 270 100% 63%;
-    --color-3: 210 100% 63%;
-    --color-4: 195 100% 63%;
-    --color-5: 90 100% 63%;
+    /* Apple retro colors (1977-1999 logo) */
+    --color-1: 107 48% 50%;  /* green #61bb46 */
+    --color-2: 42 98% 57%;   /* yellow #fdb827 */
+    --color-3: 28 91% 54%;   /* orange #f5821f */
+    --color-4: 358 73% 55%;  /* red #e03a3e */
+    --color-5: 300 42% 41%;  /* purple #963d97 */
+    --color-6: 197 100% 43%; /* blue #009ddc */
   }
 
   * {

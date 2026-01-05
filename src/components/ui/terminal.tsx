@@ -134,16 +134,16 @@ export const TypingAnimation = ({
         "text-sm font-mono tracking-tight cursor-pointer",
         className,
         "break-words w-full",
-        messageType === "prompt" && "text-cyan-400",
-        messageType === "info" && "text-neutral-400",
-        messageType === "success" && "text-emerald-400",
-        messageType === "error" && "text-red-400",
+        messageType === "prompt" && "text-cyan-600",
+        messageType === "info" && "text-stone-500",
+        messageType === "success" && "text-emerald-600",
+        messageType === "error" && "text-red-600",
       )}
     >
       <span ref={textRef}></span>
       <span
         ref={cursorRef}
-        className="animate-pulse text-neutral-500"
+        className="animate-pulse text-stone-400"
         style={{ display: started && !completed ? "inline" : "none" }}
       >
         ▊
@@ -226,12 +226,12 @@ export const Terminal = ({ children, className, title }: TerminalProps) => {
   return (
     <div
       className={cn(
-        "relative isolate z-0 h-[75vh] w-full rounded-xl border border-neutral-800 bg-neutral-950 shadow-2xl flex flex-col",
+        "relative isolate z-0 h-[75vh] w-full rounded-xl border border-stone-300 bg-white shadow-2xl flex flex-col",
         className,
       )}
     >
       {/* Fixed Header */}
-      <div className="flex-none border-b border-neutral-800 p-4">
+      <div className="flex-none border-b border-stone-200 p-4 bg-stone-50">
         <div className="relative flex flex-row items-center justify-center">
           <div className="absolute left-0 flex gap-x-2">
             <div className="h-3 w-3 rounded-full bg-red-500/80 hover:bg-red-500 transition-colors"></div>
@@ -239,7 +239,7 @@ export const Terminal = ({ children, className, title }: TerminalProps) => {
             <div className="h-3 w-3 rounded-full bg-green-500/80 hover:bg-green-500 transition-colors"></div>
           </div>
           {title ? (
-            <div className="text-sm font-mono text-neutral-300 tracking-tight">{title}</div>
+            <div className="text-sm font-mono text-stone-600 tracking-tight">{title}</div>
           ) : (
             <CiderpressLogo size="sm" showText />
           )}
@@ -258,13 +258,13 @@ export const Terminal = ({ children, className, title }: TerminalProps) => {
       <BorderBeam
         duration={6}
         size={400}
-        className="from-transparent via-cyan-500/50 to-transparent"
+        className="from-[#61bb46] via-[#fdb827] to-[#f5821f]"
       />
       <BorderBeam
         duration={6}
         delay={3}
         size={400}
-        className="from-transparent via-purple-500/50 to-transparent"
+        className="from-[#e03a3e] via-[#963d97] to-[#009ddc]"
       />
     </div>
   );

@@ -190,10 +190,10 @@ export default function TerminalContent({
 
     const textClassName = cn(
       "break-words w-full",
-      message.type === "prompt" && "text-cyan-400",
-      message.type === "info" && "text-neutral-400",
-      message.type === "success" && "text-emerald-400",
-      message.type === "error" && "text-red-400",
+      message.type === "prompt" && "text-cyan-600",
+      message.type === "info" && "text-stone-500",
+      message.type === "success" && "text-emerald-600",
+      message.type === "error" && "text-red-600",
     );
 
     // Live messages render instantly and update in real-time
