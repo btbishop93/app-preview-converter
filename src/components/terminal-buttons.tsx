@@ -79,11 +79,7 @@ export function TerminalButtons({
           <Button
             key={button.action}
             variant={button.action === "restart" ? "outline" : "default"}
-            className={cn(
-              "w-fit",
-              button.action === "restart" &&
-                "border-stone-300 text-stone-600 hover:bg-stone-100 hover:text-stone-800",
-            )}
+            className="w-fit"
             onClick={() => onButtonClick(button)}
           >
             {button.text}
