@@ -226,7 +226,7 @@ export const Terminal = ({ children, className, title }: TerminalProps) => {
   return (
     <div
       className={cn(
-        "relative isolate z-0 h-[75vh] w-full rounded-xl border border-stone-300 bg-white shadow-2xl flex flex-col",
+        "relative isolate z-0 h-[60vh] w-full rounded-xl border border-stone-300 bg-white shadow-2xl flex flex-col",
         className,
       )}
     >

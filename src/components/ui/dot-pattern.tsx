@@ -20,9 +20,9 @@ interface DotPatternProps {
 }
 
 export function DotPattern({ width = 48, height = 48, className, glow = false }: DotPatternProps) {
-  // Calculate grid dimensions based on a reasonable viewport
-  const cols = Math.ceil(1920 / width);
-  const rows = Math.ceil(1080 / height);
+  // Create a very large grid to ensure full coverage on any screen (4K+)
+  const cols = 100;
+  const rows = 60;
 
   // Create a grid of apples with deterministic colors
   const apples = [];
@@ -51,10 +51,11 @@ export function DotPattern({ width = 48, height = 48, className, glow = false }:
     <div
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 overflow-hidden",
+        "pointer-events-none fixed inset-0 overflow-hidden",
         glow && "animate-dot-glow",
         className,
       )}
+      style={{ width: cols * width, height: rows * height }}
     >
       {apples}
     </div>
