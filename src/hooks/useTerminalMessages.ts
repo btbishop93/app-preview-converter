@@ -75,8 +75,8 @@ export const useTerminalMessages = () => {
         delay: TIMING.BEAT, // Small pause after success
         type: "prompt",
         buttons: [
-          { text: "macOS (1920×1080)", action: "macos", variant: "default" },
-          { text: "iOS (886×1920)", action: "ios", variant: "secondary" },
+          { text: "macOS (1920×1080)", action: "macos", variant: "apple-blue" },
+          { text: "iOS (886×1920)", action: "ios", variant: "apple-purple" },
         ],
       },
     ]);
