@@ -2,6 +2,7 @@ export interface Button {
   text: string;
   action: string;
   type?: "rainbow" | "default" | "bmc";
+  variant?: "default" | "secondary" | "outline" | "ghost";
   onAction?: (file?: File) => void;
 }
 

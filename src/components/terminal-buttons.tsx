@@ -75,10 +75,13 @@ export function TerminalButtons({
           );
         }
 
+        // Use variant from button config, fallback to outline for restart, default otherwise
+        const variant = button.variant ?? (button.action === "restart" ? "outline" : "default");
+
         return (
           <Button
             key={button.action}
-            variant={button.action === "restart" ? "outline" : "default"}
+            variant={variant}
             className="w-fit"
             onClick={() => onButtonClick(button)}
           >

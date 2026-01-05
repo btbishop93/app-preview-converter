@@ -75,8 +75,8 @@ export const useTerminalMessages = () => {
         delay: TIMING.BEAT, // Small pause after success
         type: "prompt",
         buttons: [
-          { text: "macOS (1920×1080)", action: "macos" },
-          { text: "iOS (886×1920)", action: "ios" },
+          { text: "macOS (1920×1080)", action: "macos", variant: "default" },
+          { text: "iOS (886×1920)", action: "ios", variant: "secondary" },
         ],
       },
     ]);
@@ -112,8 +112,8 @@ export const useTerminalMessages = () => {
         delay: TIMING.BEAT,
         type: "prompt",
         buttons: [
-          { text: "Yes (Recommended)", action: "audio-yes" },
-          { text: "No", action: "audio-no" },
+          { text: "Yes (Recommended)", action: "audio-yes", variant: "default" },
+          { text: "No", action: "audio-no", variant: "outline" },
         ],
       },
     ]);
