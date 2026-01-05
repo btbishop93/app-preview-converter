@@ -1,9 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable Turbopack (default in Next.js 16)
-  turbopack: {},
-  
-  // Set security headers for SharedArrayBuffer support
+  // Enable WebAssembly support for ffmpeg.wasm
+  webpack: (config) => {
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    };
+    return config;
+  },
+
+  // Set security headers for SharedArrayBuffer support (required for ffmpeg.wasm)
   async headers() {
     return [
       {
