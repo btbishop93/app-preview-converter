@@ -12,10 +12,7 @@ import type { TerminalMessage } from "@/types/terminal";
 const UI_STEPS = ["loading", "scaling", "finalizing"] as const;
 
 // Get the status text based on step and progress
-const getStatusText = (
-  currentStep: string,
-  currentProgress: number
-): string => {
+const getStatusText = (currentStep: string, currentProgress: number): string => {
   switch (currentStep) {
     case "loading":
       return "🍎 Warming up the cider press...";
@@ -32,12 +29,8 @@ interface VideoConvertFlowProps {
   onConversionComplete?: () => void;
 }
 
-export default function VideoConvertFlow({
-  onConversionComplete,
-}: VideoConvertFlowProps) {
-  const [convertedVideoUrl, setConvertedVideoUrl] = useState<string | null>(
-    null
-  );
+export default function VideoConvertFlow({ onConversionComplete }: VideoConvertFlowProps) {
+  const [convertedVideoUrl, setConvertedVideoUrl] = useState<string | null>(null);
   const [_uploadKey, setUploadKey] = useState(0);
   const { show, hide } = useUploadButtonState();
 
@@ -73,9 +66,7 @@ export default function VideoConvertFlow({
   const updateMessage = useCallback(
     (message: string, type: "success" | "error") => {
       setMessages((currentMessages) => {
-        const uploadPromptIndex = currentMessages.findIndex(
-          (msg) => msg.type === "prompt"
-        );
+        const uploadPromptIndex = currentMessages.findIndex((msg) => msg.type === "prompt");
         if (uploadPromptIndex === -1) return currentMessages;
 
         const baseMessages = currentMessages.slice(0, uploadPromptIndex + 1);
@@ -94,7 +85,7 @@ export default function VideoConvertFlow({
         show();
       }
     },
-    [setMessages, show]
+    [setMessages, show],
   );
 
   const handleFileUpload = useCallback(
@@ -111,7 +102,7 @@ export default function VideoConvertFlow({
         updateMessage(errorMessage, "error");
       }
     },
-    [hide, updateMessage, addPlatformPrompt]
+    [hide, updateMessage, addPlatformPrompt],
   );
 
   // Initialize messages on mount or when uploadKey changes (restart)
@@ -185,9 +176,7 @@ export default function VideoConvertFlow({
 
     const loaded = await loadFFmpeg();
     if (!loaded) {
-      addErrorMessage(
-        "Failed to load video processor. Please refresh and try again."
-      );
+      addErrorMessage("Failed to load video processor. Please refresh and try again.");
       return;
     }
 
@@ -226,7 +215,7 @@ export default function VideoConvertFlow({
         addAudioPrompt();
       }
     },
-    [addPlatformSuccessMessage, addAudioPrompt]
+    [addPlatformSuccessMessage, addAudioPrompt],
   );
 
   const handleAudioSelection = useCallback(
@@ -239,7 +228,7 @@ export default function VideoConvertFlow({
         await handleConversion();
       }
     },
-    [addAudioSuccessMessage, handleConversion]
+    [addAudioSuccessMessage, handleConversion],
   );
 
   const handleDownload = useCallback(() => {
@@ -274,13 +263,7 @@ export default function VideoConvertFlow({
     initializeMessages();
     show();
     addUploadPrompt(handleFileUpload);
-  }, [
-    resetConversion,
-    initializeMessages,
-    show,
-    addUploadPrompt,
-    handleFileUpload,
-  ]);
+  }, [resetConversion, initializeMessages, show, addUploadPrompt, handleFileUpload]);
 
   const handleButtonClick = useCallback(
     (action: string) => {
@@ -292,12 +275,7 @@ export default function VideoConvertFlow({
         window.open("https://buymeacoffee.com/brendenbishop", "_blank");
       }
     },
-    [
-      handlePlatformSelection,
-      handleAudioSelection,
-      handleDownload,
-      handleRestart,
-    ]
+    [handlePlatformSelection, handleAudioSelection, handleDownload, handleRestart],
   );
 
   return (
