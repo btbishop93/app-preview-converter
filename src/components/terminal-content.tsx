@@ -188,19 +188,42 @@ export default function TerminalContent({
       return null;
     }
 
+    const textClassName = cn(
+      "break-words w-full",
+      message.type === "prompt" && "text-cyan-400",
+      message.type === "info" && "text-neutral-400",
+      message.type === "success" && "text-emerald-400",
+      message.type === "error" && "text-red-400",
+    );
+
+    // Live messages render instantly and update in real-time
+    if (message.live) {
+      // Auto-complete live messages so the queue keeps moving
+      if (!isComplete) {
+        handleMessageComplete(index);
+      }
+
+      return (
+        <div key={`${messageVersion}-${index}-live`}>
+          <span className={cn("text-sm font-mono tracking-tight", textClassName)}>
+            {message.text}
+          </span>
+          {message.buttons && (
+            <AnimatedSpan delay={TERMINAL_TIMING.BUTTON_APPEAR_DELAY_MS}>
+              {renderButtons(message.buttons, index)}
+            </AnimatedSpan>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div key={`${messageVersion}-${index}`}>
         <TypingAnimation
           delay={0} // No delay - we control start via activeMessageIndex
           duration={TERMINAL_TIMING.TYPING_SPEED_MS}
           onComplete={() => handleMessageComplete(index)}
-          className={cn(
-            "break-words w-full",
-            message.type === "prompt" && "text-cyan-400",
-            message.type === "info" && "text-neutral-400",
-            message.type === "success" && "text-emerald-400",
-            message.type === "error" && "text-red-400",
-          )}
+          className={textClassName}
         >
           {message.text}
         </TypingAnimation>
