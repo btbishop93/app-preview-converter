@@ -1,59 +1,62 @@
 "use client";
 
-import type React from "react";
-import { useId } from "react";
+import { Apple } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface DotPatternProps extends React.SVGProps<SVGSVGElement> {
+const APPLE_COLORS = [
+  "#61bb46", // green
+  "#fdb827", // yellow
+  "#f5821f", // orange
+  "#e03a3e", // red
+  "#963d97", // purple
+  "#009ddc", // blue
+];
+
+interface DotPatternProps {
   width?: number;
   height?: number;
-  x?: number;
-  y?: number;
-  cx?: number;
-  cy?: number;
-  cr?: number;
   className?: string;
   glow?: boolean;
 }
 
-export function DotPattern({
-  width = 16,
-  height = 16,
-  x = 0,
-  y = 0,
-  cx = 1,
-  cy = 1,
-  cr = 1,
-  className,
-  glow = false,
-  ...props
-}: DotPatternProps) {
-  const id = useId();
+export function DotPattern({ width = 48, height = 48, className, glow = false }: DotPatternProps) {
+  // Calculate grid dimensions based on a reasonable viewport
+  const cols = Math.ceil(1920 / width);
+  const rows = Math.ceil(1080 / height);
+
+  // Create a grid of apples with deterministic colors
+  const apples = [];
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      // Deterministic "random" color based on position
+      const colorIndex = (col * 7 + row * 13) % APPLE_COLORS.length;
+      const color = APPLE_COLORS[colorIndex];
+
+      apples.push(
+        <div
+          key={`${row}-${col}`}
+          className="absolute"
+          style={{
+            left: col * width + width / 2 - 6,
+            top: row * height + height / 2 - 6,
+          }}
+        >
+          <Apple size={12} color={color} strokeWidth={1.5} style={{ opacity: 0.35 }} />
+        </div>,
+      );
+    }
+  }
 
   return (
-    <svg
+    <div
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 h-full w-full text-neutral-400/80",
+        "pointer-events-none absolute inset-0 overflow-hidden",
         glow && "animate-dot-glow",
         className,
       )}
-      {...props}
     >
-      <defs>
-        <pattern
-          id={`${id}-pattern`}
-          width={width}
-          height={height}
-          patternUnits="userSpaceOnUse"
-          patternContentUnits="userSpaceOnUse"
-          x={x}
-          y={y}
-        >
-          <circle cx={cx} cy={cy} r={cr} fill="currentColor" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#${id}-pattern)`} strokeWidth={0} />
-    </svg>
+      {apples}
+    </div>
   );
 }

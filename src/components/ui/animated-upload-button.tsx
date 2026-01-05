@@ -27,7 +27,7 @@ export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, Animated
           <motion.button
             ref={ref}
             className={cn(
-              "relative flex h-10 w-fit items-center justify-center overflow-hidden rounded-lg bg-primary px-6 text-primary-foreground",
+              "relative flex h-10 w-fit items-center justify-center overflow-hidden rounded-lg bg-[#61bb46] px-6 text-white",
               className,
             )}
             onClick={handleClick}
@@ -52,7 +52,7 @@ export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, Animated
           <motion.button
             ref={ref}
             className={cn(
-              "relative flex h-10 w-fit cursor-wait items-center justify-center rounded-lg border-none bg-primary/80 px-6 text-primary-foreground",
+              "relative flex h-10 w-fit cursor-wait items-center justify-center rounded-lg border-none bg-[#61bb46]/80 px-6 text-white",
               className,
             )}
             onClick={handleClick}
@@ -76,7 +76,7 @@ export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, Animated
           <motion.button
             ref={ref}
             className={cn(
-              "relative flex h-10 w-fit cursor-pointer items-center justify-center rounded-lg border-none bg-primary px-6 text-primary-foreground",
+              "relative flex h-10 w-fit cursor-pointer items-center justify-center rounded-lg border-none bg-[#61bb46] hover:bg-[#4fa336] px-6 text-white transition-colors",
               className,
             )}
             onClick={handleClick}

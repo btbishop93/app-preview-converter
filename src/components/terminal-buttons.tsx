@@ -4,7 +4,6 @@ import { AnimatedUploadButton } from "@/components/ui/animated-upload-button";
 import { BMCButton } from "@/components/ui/bmc-button";
 import { Button } from "@/components/ui/button";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { cn } from "@/lib/utils";
 import type { Button as ButtonType } from "@/types/terminal";
 
 interface TerminalButtonsProps {
@@ -75,15 +74,14 @@ export function TerminalButtons({
           );
         }
 
+        // Use variant from button config, fallback to outline for restart, default otherwise
+        const variant = button.variant ?? (button.action === "restart" ? "outline" : "default");
+
         return (
           <Button
             key={button.action}
-            variant={button.action === "restart" ? "outline" : "default"}
-            className={cn(
-              "w-fit",
-              button.action === "restart" &&
-                "border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-neutral-100",
-            )}
+            variant={variant}
+            className="w-fit"
             onClick={() => onButtonClick(button)}
           >
             {button.text}

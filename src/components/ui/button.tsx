@@ -9,13 +9,20 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        default: "bg-[#61bb46] text-white shadow hover:bg-[#4fa336]",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "border border-stone-300 bg-white text-stone-700 shadow-sm hover:bg-stone-50 hover:text-stone-900",
+        secondary: "bg-stone-100 text-stone-800 shadow-sm hover:bg-stone-200",
+        ghost: "hover:bg-stone-100 hover:text-stone-900",
+        link: "text-[#009ddc] underline-offset-4 hover:underline",
+        // Apple retro color variants
+        "apple-blue": "bg-[#009ddc] text-white shadow hover:bg-[#0087c1]",
+        "apple-purple": "bg-[#963d97] text-white shadow hover:bg-[#7a3279]",
+        "apple-orange": "bg-[#f5821f] text-white shadow hover:bg-[#dd7119]",
+        "apple-red": "bg-[#e03a3e] text-white shadow hover:bg-[#c4282c]",
+        "apple-yellow": "bg-[#fdb827] text-stone-900 shadow hover:bg-[#e5a520]",
+        "apple-green": "bg-[#61bb46] text-white shadow hover:bg-[#4fa336]",
       },
       size: {
         default: "h-9 px-4 py-2",
