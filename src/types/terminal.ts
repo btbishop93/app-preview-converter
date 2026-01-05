@@ -2,7 +2,17 @@ export interface Button {
   text: string;
   action: string;
   type?: "rainbow" | "default" | "bmc";
-  variant?: "default" | "secondary" | "outline" | "ghost" | "apple-blue" | "apple-purple" | "apple-orange" | "apple-red" | "apple-yellow" | "apple-green";
+  variant?:
+    | "default"
+    | "secondary"
+    | "outline"
+    | "ghost"
+    | "apple-blue"
+    | "apple-purple"
+    | "apple-orange"
+    | "apple-red"
+    | "apple-yellow"
+    | "apple-green";
   onAction?: (file?: File) => void;
 }
 

@@ -255,11 +255,7 @@ export const Terminal = ({ children, className, title }: TerminalProps) => {
         </pre>
       </div>
 
-      <BorderBeam
-        duration={6}
-        size={400}
-        className="from-[#61bb46] via-[#fdb827] to-[#f5821f]"
-      />
+      <BorderBeam duration={6} size={400} className="from-[#61bb46] via-[#fdb827] to-[#f5821f]" />
       <BorderBeam
         duration={6}
         delay={3}

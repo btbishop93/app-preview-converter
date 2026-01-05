@@ -4,7 +4,6 @@ import { AnimatedUploadButton } from "@/components/ui/animated-upload-button";
 import { BMCButton } from "@/components/ui/bmc-button";
 import { Button } from "@/components/ui/button";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { cn } from "@/lib/utils";
 import type { Button as ButtonType } from "@/types/terminal";
 
 interface TerminalButtonsProps {

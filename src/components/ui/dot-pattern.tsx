@@ -19,12 +19,7 @@ interface DotPatternProps {
   glow?: boolean;
 }
 
-export function DotPattern({
-  width = 48,
-  height = 48,
-  className,
-  glow = false,
-}: DotPatternProps) {
+export function DotPattern({ width = 48, height = 48, className, glow = false }: DotPatternProps) {
   // Calculate grid dimensions based on a reasonable viewport
   const cols = Math.ceil(1920 / width);
   const rows = Math.ceil(1080 / height);

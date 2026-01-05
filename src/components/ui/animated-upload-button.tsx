@@ -24,7 +24,7 @@ export const AnimatedUploadButton = React.forwardRef<HTMLButtonElement, Animated
     return (
       <AnimatePresence mode="wait">
         {uploadStatus ? (
-            <motion.button
+          <motion.button
             ref={ref}
             className={cn(
               "relative flex h-10 w-fit items-center justify-center overflow-hidden rounded-lg bg-[#61bb46] px-6 text-white",
